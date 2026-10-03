@@ -1,0 +1,37 @@
+name: restaurant-inventory
+
+x-base: &base
+  build:
+    context: .
+    dockerfile: docker/Dockerfile
+  image: restaurant-inventory/dev
+  working_dir: /app
+  volumes:
+    - .:/app
+  environment:
+    APP_URL: http://localhost:8000
+    VITE_DEV_SERVER_HOST: localhost
+
+services:
+  # Laravel API + SPA shell on http://localhost:8000
+  app:
+    <<: *base
+    entrypoint: ["sh", "docker/entrypoint.sh"]
+    command: ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@file_get_contents('http://127.0.0.1:8000/up') ? 0 : 1);"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  # Vite dev server (HMR) on http://localhost:5173, used by the Blade @vite directive.
+  vite:
+    <<: *base
+    depends_on:
+      app:
+        condition: service_healthy
+    command: ["sh", "-c", "[ -d node_modules/.bin ] || npm install --no-audit --no-fund; exec npm run dev -- --host 0.0.0.0 --port 5173"]
+    ports:
+      - "5173:5173"

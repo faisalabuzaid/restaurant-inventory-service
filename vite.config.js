@@ -17,8 +17,16 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
+        // Runs inside the `vite` container: listen on all interfaces, but tell
+        // the browser (and the Laravel @vite directive) to reach it via localhost.
+        host: true,
+        port: 5173,
+        strictPort: true,
+        hmr: {
+            host: process.env.VITE_DEV_SERVER_HOST ?? 'localhost',
+        },
         watch: {
-            ignored: ['**/storage/framework/views/**'],
+            ignored: ['**/storage/framework/views/**', '**/vendor/**'],
         },
     },
 });
