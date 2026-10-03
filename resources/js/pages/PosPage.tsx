@@ -4,6 +4,7 @@ import { api, ApiError, keys } from '@/api/client';
 import type { SaleResponse } from '@/api/types';
 import { Card, Empty, ErrorBanner, Field } from '@/components/ui';
 import { dateTime, qty } from '@/lib/format';
+import { randomId } from '@/lib/id';
 
 /**
  * Simulates the POS calling POST /api/sales. Each form fill gets a fresh
@@ -17,14 +18,14 @@ export function PosPage() {
 
     const [menuItemId, setMenuItemId] = useState('');
     const [quantity, setQuantity] = useState('1');
-    const [key, setKey] = useState(() => crypto.randomUUID());
+    const [key, setKey] = useState(randomId);
     const [last, setLast] = useState<SaleResponse | null>(null);
 
     const record = useMutation({
         mutationFn: api.sales.record,
         onSuccess: (result) => {
             setLast(result);
-            setKey(crypto.randomUUID());
+            setKey(randomId());
             queryClient.invalidateQueries({ queryKey: keys.stock });
             queryClient.invalidateQueries({ queryKey: keys.sales });
         },

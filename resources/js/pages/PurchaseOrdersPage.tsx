@@ -30,11 +30,13 @@ export function PurchaseOrdersPage() {
     const selected = useMemo(() => orders.data?.find((o) => o.id === selectedId) ?? null, [orders.data, selectedId]);
 
     // Keep a sensible selection as the list changes (e.g. an order closes and leaves the open list).
+    // Only decide once the list is settled: right after creating an order the cached list is stale
+    // and does not contain it yet, and we must not drop the new selection in that window.
     useEffect(() => {
-        if (orders.data && !orders.data.some((o) => o.id === selectedId)) {
+        if (orders.data && !orders.isFetching && !orders.data.some((o) => o.id === selectedId)) {
             setSelectedId(orders.data[0]?.id ?? null);
         }
-    }, [orders.data, selectedId]);
+    }, [orders.data, orders.isFetching, selectedId]);
 
     return (
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
@@ -251,7 +253,8 @@ function OrderDetail({ order }: { order: PurchaseOrder }) {
                 </table>
             </Card>
 
-            {order.accepts_deliveries && <RecordDeliveryForm order={order} />}
+            {/* Keyed on the delivery count so a successful receipt re-prefills the form with the new outstanding. */}
+            {order.accepts_deliveries && <RecordDeliveryForm key={order.deliveries.length} order={order} />}
 
             <Card title={`Deliveries (${order.deliveries.length})`}>
                 {order.deliveries.length ? (
