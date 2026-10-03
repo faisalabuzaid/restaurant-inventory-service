@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { CatalogPage } from '@/pages/CatalogPage';
+import { MenuPage } from '@/pages/MenuPage';
 
 type Tab = 'stock' | 'purchasing' | 'menu' | 'catalog' | 'pos';
 
@@ -38,7 +40,11 @@ export default function App() {
             </header>
 
             <main>
-                <p className="text-sm text-gray-500">{tabs.find((t) => t.id === tab)?.label} coming next.</p>
+                {tab === 'catalog' && <CatalogPage />}
+                {tab === 'menu' && <MenuPage />}
+                {(tab === 'stock' || tab === 'purchasing' || tab === 'pos') && (
+                    <p className="text-sm text-gray-500">{tabs.find((t) => t.id === tab)?.label} coming next.</p>
+                )}
             </main>
         </div>
     );
