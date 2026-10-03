@@ -57,3 +57,21 @@ fatally errored the first time a delivery actually threw. The field is
 green. A separate test caught the create endpoint quietly turning into a
 200: `fresh()` drops `wasRecentlyCreated`, and Laravel was inferring 201
 from that. The controller sets 201 itself now.
+
+## Sales, stock, seed data
+
+Sales went through on the first test run. I checked the seeded numbers by
+hand against the recipes before trusting them (beef 6000, minus 12 burgers
+at 150 g, minus 5 deluxe at 200 g, is 3200). One assertion nit: PHP turns
+JSON `700.0` into the integer `700`, so `toBe(700.0)` fails. `toEqual` is
+the one that matches what the API actually returns.
+
+## React scaffold
+
+`App.tsx` for the component and `app.tsx` for the entry are the same file
+on macOS. The entry overwrote the component and `tsc` said there was no
+default export. The entry is `main.tsx` now. That would have been invisible
+on Linux. Tailwind v4 also refused `@apply btn` on a custom class, so the
+button styles are separate classes used together. TypeScript 7 dropped
+`baseUrl`, which meant the `@/` paths had to be relative, and Vite needed
+the same alias or the imports failed in the browser.

@@ -2,6 +2,5 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Single-page UI shell. All data goes through /api (see routes/api.php).
+Route::view('/', 'app')->name('app');
