@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { CatalogPage } from '@/pages/CatalogPage';
 import { MenuPage } from '@/pages/MenuPage';
+import { PurchaseOrdersPage } from '@/pages/PurchaseOrdersPage';
 
 type Tab = 'stock' | 'purchasing' | 'menu' | 'catalog' | 'pos';
 
@@ -40,9 +41,10 @@ export default function App() {
             </header>
 
             <main>
+                {tab === 'purchasing' && <PurchaseOrdersPage />}
                 {tab === 'catalog' && <CatalogPage />}
                 {tab === 'menu' && <MenuPage />}
-                {(tab === 'stock' || tab === 'purchasing' || tab === 'pos') && (
+                {(tab === 'stock' || tab === 'pos') && (
                     <p className="text-sm text-gray-500">{tabs.find((t) => t.id === tab)?.label} coming next.</p>
                 )}
             </main>
