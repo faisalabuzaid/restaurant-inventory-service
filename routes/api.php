@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\IngredientController;
+use App\Http\Controllers\Api\SupplierController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,4 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/ping', fn () => response()->json(['pong' => true]));
+Route::get('/ingredients', [IngredientController::class, 'index']);
+Route::post('/ingredients', [IngredientController::class, 'store']);
+
+Route::get('/suppliers', [SupplierController::class, 'index']);
+Route::post('/suppliers', [SupplierController::class, 'store']);
