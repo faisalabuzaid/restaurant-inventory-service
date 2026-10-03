@@ -11,7 +11,7 @@ class InvalidOperation extends DomainException
 {
     public function __construct(
         string $message,
-        private readonly string $code = 'invalid_operation',
+        private readonly string $errorCode = 'invalid_operation',
         private readonly array $context = [],
     ) {
         parent::__construct($message);
@@ -24,7 +24,7 @@ class InvalidOperation extends DomainException
 
     public function errorCode(): string
     {
-        return $this->code;
+        return $this->errorCode;
     }
 
     public function context(): array

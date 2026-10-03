@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\DeliveryController;
 use App\Http\Controllers\Api\IngredientController;
 use App\Http\Controllers\Api\MenuItemController;
 use App\Http\Controllers\Api\PurchaseOrderController;
@@ -31,3 +32,4 @@ Route::get('/purchase-orders', [PurchaseOrderController::class, 'index']);
 Route::post('/purchase-orders', [PurchaseOrderController::class, 'store']);
 Route::get('/purchase-orders/{purchaseOrder}', [PurchaseOrderController::class, 'show']);
 Route::post('/purchase-orders/{purchaseOrder}/send', [PurchaseOrderController::class, 'send']);
+Route::post('/purchase-orders/{purchaseOrder}/deliveries', [DeliveryController::class, 'store']);

@@ -44,6 +44,29 @@ class PurchaseOrder extends Model
         return $this->hasMany(PurchaseOrderLine::class);
     }
 
+    /** @return HasMany<Delivery, $this> */
+    public function deliveries(): HasMany
+    {
+        return $this->hasMany(Delivery::class);
+    }
+
+    /**
+     * Everything the API needs to render an order: supplier, lines with their
+     * received totals, and the delivery history.
+     *
+     * @return array<int|string, mixed>
+     */
+    public static function detailRelations(): array
+    {
+        return [
+            'supplier',
+            'lines' => fn ($query) => $query->withQuantityReceived(),
+            'lines.ingredient',
+            'deliveries' => fn ($query) => $query->orderBy('received_at')->orderBy('id'),
+            'deliveries.lines.purchaseOrderLine.ingredient',
+        ];
+    }
+
     /** @param  Builder<PurchaseOrder>  $query */
     public function scopeOpen(Builder $query): void
     {

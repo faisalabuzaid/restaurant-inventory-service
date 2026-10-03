@@ -31,3 +31,29 @@ does, which I found on the first failed run. I also threw out the stock
 AGENTS.md and kept a short one with the rules I did not want to repeat in
 every later prompt: stock is a ledger, status changes only go through
 `transitionTo`.
+
+## Catalog, orders, ledger, deliveries
+
+Ingredients, suppliers, then recipes. Once purchase orders needed the same
+quantity lines I pulled the validation into one trait instead of letting a
+second copy appear. For the status enum I asked for every from/to pair in
+the test, including the illegal ones. A test that only checks `draft -> sent`
+stays green if a shortcut gets added later.
+
+The first purchase-order test failed for a dull reason. The default status
+lived only on the column, so a newly created model had `status = null` in
+memory and the JSON resource crashed on `->value`. The default is now also
+on the model's `$attributes`.
+
+Deliveries I read line by line. Two things I sent back:
+
+- One bad line has to roll the whole receipt back. The test counts movements
+  and delivery rows, so a 422 that still inserted stock fails.
+- Over-receipt is checked on every line before any insert.
+
+An exception class from the first day collided with `Exception::$code` and
+fatally errored the first time a delivery actually threw. The field is
+`$errorCode` now. Nothing had thrown it before, so the earlier tests were
+green. A separate test caught the create endpoint quietly turning into a
+200: `fresh()` drops `wasRecentlyCreated`, and Laravel was inferring 201
+from that. The controller sets 201 itself now.

@@ -19,6 +19,7 @@ class PurchaseOrderResource extends JsonResource
             'status' => $this->status->value,
             'status_label' => $this->status->label(),
             'is_open' => $this->status->isOpen(),
+            'accepts_deliveries' => $this->status->acceptsDeliveries(),
             'notes' => $this->notes,
             'lines' => $this->lines->map(fn (PurchaseOrderLine $line) => [
                 'id' => $line->id,
@@ -26,7 +27,10 @@ class PurchaseOrderResource extends JsonResource
                 'ingredient_name' => $line->ingredient->name,
                 'unit' => $line->ingredient->unit->value,
                 'quantity_ordered' => (float) $line->quantity_ordered,
+                'quantity_received' => (float) $line->quantityReceived(),
+                'outstanding' => (float) $line->outstanding(),
             ])->values(),
+            'deliveries' => DeliveryResource::collection($this->whenLoaded('deliveries')),
             'sent_at' => $this->sent_at?->toISOString(),
             'closed_at' => $this->closed_at?->toISOString(),
             'created_at' => $this->created_at?->toISOString(),
