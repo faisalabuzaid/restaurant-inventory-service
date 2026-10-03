@@ -32,6 +32,7 @@ services:
     depends_on:
       app:
         condition: service_healthy
-    command: ["sh", "-c", "[ -d node_modules/.bin ] || npm install --no-audit --no-fund; exec npm run dev -- --host 0.0.0.0 --port 5173"]
+    # exec vite directly (not via npm) so SIGTERM reaches it and it removes public/hot on shutdown.
+    command: ["sh", "-c", "[ -d node_modules/.bin ] || npm install --no-audit --no-fund; rm -f public/hot; exec node_modules/.bin/vite --host 0.0.0.0 --port 5173"]
     ports:
       - "5173:5173"

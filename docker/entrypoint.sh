@@ -24,6 +24,10 @@ fi
 mkdir -p database storage/logs
 [ -f database/database.sqlite ] || touch database/database.sqlite
 
+# A stale Vite "hot" file from an unclean shutdown would point the page at a
+# dev server that is not running. The vite service recreates it when it starts.
+rm -f public/hot
+
 echo "[entrypoint] running migrations and seeders"
 php artisan migrate --force --seed --no-interaction
 
